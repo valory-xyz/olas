@@ -58,7 +58,7 @@ def get_circulating_supply():
         "data": {
             "circulatingSupply": str(circulating_supply),
             "token": "OLAS",
-            "denomination": 18,
+            "decimals": 18,
         },
         "generatedTimeMs": int(time.time() * 1000),  # Current time in milliseconds
     }
@@ -71,7 +71,11 @@ def get_total_supply():
     total_supply = olas_contract.functions.totalSupply().call()
     response = {
         "success": True,
-        "data": {"totalSupply": str(total_supply), "token": "OLAS", "denomination": 18},
+        "data": {
+            "totalSupply": str(total_supply),
+            "token": "OLAS",
+            "decimals": 18,
+        },
         "generatedTimeMs": int(time.time() * 1000),  # Current time in milliseconds
     }
     return jsonify(response)
