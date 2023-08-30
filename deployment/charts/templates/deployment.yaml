@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: olas-api
+  namespace: olas-api
+spec:
+  selector:
+    matchLabels:
+      app: olas-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: olas-api
+    spec:
+      containers:
+        - name: olas-api
+          image: valory/olas-api:latest
+          imagePullPolicy: Always
+          ports:
+            - name: olas-api
+              containerPort: 8080
+          env:
+            - name: ALCHEMY_API_KEY
+              value: {{ .Values.ALCHEMY_API_KEY }}
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: olas-api
+  namespace: olas-api
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app: olas-api
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    meta.helm.sh/release-namespace: olas-api
+  name: olas-api-ingress
+  namespace: olas-api
+spec:
+  ingressClassName: public
+  rules:
+    - host: {{ .Values.hostname }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: olas-api
+                port:
+                  number: 80
+            path: /
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - {{ .Values.hostname }}
+      secretName: {{ .Values.hostname }}-tls-secret

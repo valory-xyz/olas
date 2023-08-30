@@ -1,0 +1,33 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: olas-api
+build:
+  artifacts:
+  - image: olas-api
+    context: ../
+    docker:
+      dockerfile: Dockerfile
+#deploy:
+#  kubectl:
+#    manifests:
+#    - confmap.yaml
+#    - deployment.yaml
+deploy:
+  helm:
+    releases:
+      - name: olas-api
+        createNamespace: true
+        namespace: olas-api
+        chartPath: ./charts
+        setValueTemplates:
+            regcred: "{{.DOCKER_AUTH}}"
+            hostname: "{{.OLAS_API_HOSTNAME}}"
+            ALCHEMY_API_KEY: "{{.OLAS_API_ALCHEMY_API_KEY}}"
+        artifactOverrides: 
+          image: olas-api
+portForward:
+- resourceType: service
+  resourceName: olas-api
+  address: 0.0.0.0
+  port: 8080
