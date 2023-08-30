@@ -24,6 +24,7 @@ deploy:
             regcred: "{{.DOCKER_AUTH}}"
             hostname: "{{.OLAS_API_HOSTNAME}}"
             ALCHEMY_API_KEY: "{{.OLAS_API_ALCHEMY_API_KEY}}"
+            image_tag: "{{.IMAGE_TAG}}@{{.IMAGE_DIGEST}}"
         artifactOverrides: 
           image: olas-api
 portForward:
