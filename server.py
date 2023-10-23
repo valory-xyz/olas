@@ -1,6 +1,8 @@
+"""OLAS API SERVER using flask"""
 import json
 import os
 import time
+from pathlib import Path
 
 from flask import Flask, jsonify
 from flask_caching import Cache
@@ -24,10 +26,11 @@ VALORY_MULTISIG_ADDRESS = "0x87cc0d34f6111c8A7A4Bdf758a9a715A3675f941"
 TIMELOCK_ADDRESS = "0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE"
 
 # Load ABI from a file
-with open("olas_abi.json", "r") as file:
-    OLAS_CONTRACT_ABI = json.load(file)
+OLAS_CONTRACT_ABI = json.loads(Path("olas_abi.json").read_text(encoding="utf-8"))
 
-olas_contract = w3.eth.contract(address=OLAS_CONTRACT_ADDRESS, abi=OLAS_CONTRACT_ABI)
+olas_contract = w3.eth.contract(  # type: ignore
+    address=OLAS_CONTRACT_ADDRESS, abi=OLAS_CONTRACT_ABI
+)
 
 # Cache timeout (e.g., 10 minutes)
 CACHE_TIMEOUT = 600
@@ -36,6 +39,7 @@ CACHE_TIMEOUT = 600
 @app.route("/circulating_supply", methods=["GET"])
 @cache.cached(timeout=CACHE_TIMEOUT)
 def get_circulating_supply():
+    """Get circulating suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
     veolas_total_supply = olas_contract.functions.balanceOf(
         VEOLAS_CONTRACT_ADDRESS
@@ -68,6 +72,7 @@ def get_circulating_supply():
 @app.route("/total_supply", methods=["GET"])
 @cache.cached(timeout=CACHE_TIMEOUT)
 def get_total_supply():
+    """Get total suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
     response = {
         "success": True,
@@ -83,6 +88,7 @@ def get_total_supply():
 
 @app.route("/check", methods=["GET"])
 def check():
+    """Simple health check."""
     return jsonify({"check": "ok"})
 
 
