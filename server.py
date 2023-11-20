@@ -69,6 +69,31 @@ def get_circulating_supply():
     return jsonify(response)
 
 
+@app.route("/circulating_supply_simple", methods=["GET"])
+@cache.cached(timeout=CACHE_TIMEOUT)
+def get_circulating_supply_simple():
+    """Get circulating suply api endpoint."""
+    total_supply = olas_contract.functions.totalSupply().call()
+    veolas_total_supply = olas_contract.functions.balanceOf(
+        VEOLAS_CONTRACT_ADDRESS
+    ).call()
+    buolas_total_supply = olas_contract.functions.balanceOf(
+        BUOLAS_CONTRACT_ADDRESS
+    ).call()
+    valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
+    timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
+    circulating_supply = (
+        total_supply
+        - veolas_total_supply
+        - buolas_total_supply
+        - valory_multisig
+        - timelock
+    )
+
+    circulating_supply_decimals = circulating_supply / 10 ** 18
+    return str(circulating_supply_decimals)
+
+
 @app.route("/total_supply", methods=["GET"])
 @cache.cached(timeout=CACHE_TIMEOUT)
 def get_total_supply():
@@ -84,6 +109,15 @@ def get_total_supply():
         "generatedTimeMs": int(time.time() * 1000),  # Current time in milliseconds
     }
     return jsonify(response)
+
+
+@app.route("/total_supply_simple", methods=["GET"])
+@cache.cached(timeout=CACHE_TIMEOUT)
+def get_total_supply_simple():
+    """Get total suply api endpoint."""
+    total_supply = olas_contract.functions.totalSupply().call()
+    total_supply_decimals = total_supply / 10 ** 18
+    return str(total_supply_decimals)
 
 
 @app.route("/check", methods=["GET"])
