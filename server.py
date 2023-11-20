@@ -90,7 +90,7 @@ def get_circulating_supply_simple():
         - timelock
     )
 
-    circulating_supply_decimals = circulating_supply / 10 ** 18
+    circulating_supply_decimals = circulating_supply / 10**18
     return str(circulating_supply_decimals)
 
 
@@ -116,7 +116,7 @@ def get_total_supply():
 def get_total_supply_simple():
     """Get total suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
-    total_supply_decimals = total_supply / 10 ** 18
+    total_supply_decimals = total_supply / 10**18
     return str(total_supply_decimals)
 
 
