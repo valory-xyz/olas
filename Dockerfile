@@ -6,8 +6,8 @@ COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 COPY README.md README.md
 RUN poetry install --no-root
+RUN poetry run pip install --upgrade pip setuptools
 COPY olas_abi.json olas_abi.json
 COPY server.py server.py
 
-
-CMD [ "poetry", "run", "flask", "--debug", "--app", "server.py", "run", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["poetry",  "run", "waitress-serve", "--call", "server:create_app"]
