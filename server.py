@@ -41,18 +41,19 @@ CACHE_TIMEOUT = 600
 def get_circulating_supply():
     """Get circulating suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
-    veolas_total_supply = olas_contract.functions.balanceOf(
-        VEOLAS_CONTRACT_ADDRESS
-    ).call()
+    # buOLAS entirely burned
     buolas_total_supply = olas_contract.functions.balanceOf(
         BUOLAS_CONTRACT_ADDRESS
+    ).call()
+    total_supply -= buolas_total_supply
+    veolas_total_supply = olas_contract.functions.balanceOf(
+        VEOLAS_CONTRACT_ADDRESS
     ).call()
     valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
     timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
     circulating_supply = (
         total_supply
         - veolas_total_supply
-        - buolas_total_supply
         - valory_multisig
         - timelock
     )
@@ -74,6 +75,11 @@ def get_circulating_supply():
 def get_circulating_supply_simple():
     """Get circulating suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
+    # buOLAS entirely burned
+    buolas_total_supply = olas_contract.functions.balanceOf(
+        BUOLAS_CONTRACT_ADDRESS
+    ).call()
+    total_supply -= buolas_total_supply
     veolas_total_supply = olas_contract.functions.balanceOf(
         VEOLAS_CONTRACT_ADDRESS
     ).call()
@@ -85,7 +91,6 @@ def get_circulating_supply_simple():
     circulating_supply = (
         total_supply
         - veolas_total_supply
-        - buolas_total_supply
         - valory_multisig
         - timelock
     )
@@ -99,6 +104,11 @@ def get_circulating_supply_simple():
 def get_total_supply():
     """Get total suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
+    # buOLAS entirely burned
+    buolas_total_supply = olas_contract.functions.balanceOf(
+        BUOLAS_CONTRACT_ADDRESS
+    ).call()
+    total_supply -= buolas_total_supply
     response = {
         "success": True,
         "data": {
@@ -116,6 +126,11 @@ def get_total_supply():
 def get_total_supply_simple():
     """Get total suply api endpoint."""
     total_supply = olas_contract.functions.totalSupply().call()
+    # buOLAS entirely burned
+    buolas_total_supply = olas_contract.functions.balanceOf(
+        BUOLAS_CONTRACT_ADDRESS
+    ).call()
+    total_supply -= buolas_total_supply
     total_supply_decimals = total_supply / 10**18
     return str(total_supply_decimals)
 
