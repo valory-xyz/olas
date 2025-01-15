@@ -51,12 +51,7 @@ def get_circulating_supply():
     ).call()
     valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
     timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
-    circulating_supply = (
-        total_supply
-        - veolas_total_supply
-        - valory_multisig
-        - timelock
-    )
+    circulating_supply = total_supply - veolas_total_supply - valory_multisig - timelock
 
     response = {
         "success": True,
@@ -88,12 +83,7 @@ def get_circulating_supply_simple():
     ).call()
     valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
     timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
-    circulating_supply = (
-        total_supply
-        - veolas_total_supply
-        - valory_multisig
-        - timelock
-    )
+    circulating_supply = total_supply - veolas_total_supply - valory_multisig - timelock
 
     circulating_supply_decimals = circulating_supply / 10**18
     return str(circulating_supply_decimals)
