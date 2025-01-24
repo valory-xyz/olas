@@ -9,6 +9,7 @@ from flask import Flask, jsonify
 from flask_caching import Cache
 from web3 import Web3
 
+
 def create_app():
     app = Flask(__name__)
 
@@ -18,7 +19,9 @@ def create_app():
 
     # Connect to Ethereum node (using Infura as an example)
     ALCHEMY_API_KEY = os.getenv("ALCHEMY_API_KEY")
-    w3 = Web3(Web3.HTTPProvider(f"https://eth-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"))
+    w3 = Web3(
+        Web3.HTTPProvider(f"https://eth-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}")
+    )
 
     # Replace with your contract's ABI and address
     OLAS_CONTRACT_ADDRESS = "0x0001A500A6B18995B03f44bb040A5fFc28E45CB0"
@@ -37,7 +40,6 @@ def create_app():
     # Cache timeout (e.g., 10 minutes)
     CACHE_TIMEOUT = 600
 
-
     @app.route("/circulating_supply", methods=["GET"])
     @cache.cached(timeout=CACHE_TIMEOUT)
     def get_circulating_supply():
@@ -51,9 +53,13 @@ def create_app():
         veolas_total_supply = olas_contract.functions.balanceOf(
             VEOLAS_CONTRACT_ADDRESS
         ).call()
-        valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
+        valory_multisig = olas_contract.functions.balanceOf(
+            VALORY_MULTISIG_ADDRESS
+        ).call()
         timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
-        circulating_supply = total_supply - veolas_total_supply - valory_multisig - timelock
+        circulating_supply = (
+            total_supply - veolas_total_supply - valory_multisig - timelock
+        )
 
         response = {
             "success": True,
@@ -65,7 +71,6 @@ def create_app():
             "generatedTimeMs": int(time.time() * 1000),  # Current time in milliseconds
         }
         return jsonify(response)
-
 
     @app.route("/circulating_supply_simple", methods=["GET"])
     @cache.cached(timeout=CACHE_TIMEOUT)
@@ -83,13 +88,16 @@ def create_app():
         buolas_total_supply = olas_contract.functions.balanceOf(
             BUOLAS_CONTRACT_ADDRESS
         ).call()
-        valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
+        valory_multisig = olas_contract.functions.balanceOf(
+            VALORY_MULTISIG_ADDRESS
+        ).call()
         timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
-        circulating_supply = total_supply - veolas_total_supply - valory_multisig - timelock
+        circulating_supply = (
+            total_supply - veolas_total_supply - valory_multisig - timelock
+        )
 
         circulating_supply_decimals = circulating_supply / 10**18
         return str(circulating_supply_decimals)
-
 
     @app.route("/circulating_supply_cg", methods=["GET"])
     @cache.cached(timeout=CACHE_TIMEOUT)
@@ -107,9 +115,13 @@ def create_app():
         buolas_total_supply = olas_contract.functions.balanceOf(
             BUOLAS_CONTRACT_ADDRESS
         ).call()
-        valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
+        valory_multisig = olas_contract.functions.balanceOf(
+            VALORY_MULTISIG_ADDRESS
+        ).call()
         timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
-        circulating_supply = total_supply - veolas_total_supply - valory_multisig - timelock
+        circulating_supply = (
+            total_supply - veolas_total_supply - valory_multisig - timelock
+        )
 
         circulating_supply_decimals = circulating_supply / 10**18
         response = {"result": str(circulating_supply_decimals)}
@@ -136,7 +148,6 @@ def create_app():
         }
         return jsonify(response)
 
-
     @app.route("/total_supply_simple", methods=["GET"])
     @cache.cached(timeout=CACHE_TIMEOUT)
     def get_total_supply_simple():
@@ -149,7 +160,6 @@ def create_app():
         total_supply -= buolas_total_supply
         total_supply_decimals = total_supply / 10**18
         return str(total_supply_decimals)
-
 
     @app.route("/total_supply_cg", methods=["GET"])
     @cache.cached(timeout=CACHE_TIMEOUT)
@@ -165,12 +175,11 @@ def create_app():
         response = {"result": str(total_supply_decimals)}
         return jsonify(response)
 
-
     @app.route("/check", methods=["GET"])
     def check():
         """Simple health check."""
         return jsonify({"check": "ok"})
-    
+
     return app
 
 
