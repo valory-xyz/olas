@@ -91,6 +91,30 @@ def create_app():
         return str(circulating_supply_decimals)
 
 
+    @app.route("/circulating_supply_cg", methods=["GET"])
+    @cache.cached(timeout=CACHE_TIMEOUT)
+    def get_circulating_supply_cg():
+        """Get circulating suply api endpoint."""
+        total_supply = olas_contract.functions.totalSupply().call()
+        # buOLAS entirely burned
+        buolas_total_supply = olas_contract.functions.balanceOf(
+            BUOLAS_CONTRACT_ADDRESS
+        ).call()
+        total_supply -= buolas_total_supply
+        veolas_total_supply = olas_contract.functions.balanceOf(
+            VEOLAS_CONTRACT_ADDRESS
+        ).call()
+        buolas_total_supply = olas_contract.functions.balanceOf(
+            BUOLAS_CONTRACT_ADDRESS
+        ).call()
+        valory_multisig = olas_contract.functions.balanceOf(VALORY_MULTISIG_ADDRESS).call()
+        timelock = olas_contract.functions.balanceOf(TIMELOCK_ADDRESS).call()
+        circulating_supply = total_supply - veolas_total_supply - valory_multisig - timelock
+
+        circulating_supply_decimals = circulating_supply / 10**18
+        response = {"result": str(circulating_supply_decimals)}
+        return jsonify(response)
+
     @app.route("/total_supply", methods=["GET"])
     @cache.cached(timeout=CACHE_TIMEOUT)
     def get_total_supply():
@@ -125,6 +149,21 @@ def create_app():
         total_supply -= buolas_total_supply
         total_supply_decimals = total_supply / 10**18
         return str(total_supply_decimals)
+
+
+    @app.route("/total_supply_cg", methods=["GET"])
+    @cache.cached(timeout=CACHE_TIMEOUT)
+    def get_total_supply_cg():
+        """Get total suply api endpoint."""
+        total_supply = olas_contract.functions.totalSupply().call()
+        # buOLAS entirely burned
+        buolas_total_supply = olas_contract.functions.balanceOf(
+            BUOLAS_CONTRACT_ADDRESS
+        ).call()
+        total_supply -= buolas_total_supply
+        total_supply_decimals = total_supply / 10**18
+        response = {"result": str(total_supply_decimals)}
+        return jsonify(response)
 
 
     @app.route("/check", methods=["GET"])
