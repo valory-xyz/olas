@@ -6,17 +6,14 @@ Thanks for contributing to `olas`.
 
 Prereqs:
 - Python 3.10+
-- Poetry
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
-Install dependencies:
+Install dependencies (runtime + dev tools):
 ```bash
-poetry install
+uv sync --frozen
 ```
 
-Activate the virtualenv:
-```bash
-poetry shell
-```
+`uv` manages the venv at `./.venv`; activate it with `source .venv/bin/activate`, or just prefix commands with `uv run`.
 
 ## Running locally
 
@@ -27,22 +24,22 @@ export ALCHEMY_API_KEY=YOUR_KEY
 
 Run the server:
 ```bash
-python server.py
+uv run python server.py
 ```
 
 ## Code style and checks
 
 CI runs formatting and basic checks. Before opening a PR, run:
 ```bash
-poetry run isort .
-poetry run black .
-poetry run mypy server.py
+uv run isort .
+uv run black .
+uv run mypy server.py
 ```
 
 Optional (not currently enforced in CI):
 ```bash
-poetry run flake8
-poetry run pylint server.py
+uv run flake8
+uv run pylint server.py
 ```
 
 ## Pull requests
