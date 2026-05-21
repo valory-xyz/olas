@@ -1,26 +1,28 @@
-[tool.poetry]
+[project]
 name = "olas"
 version = "0.1.0"
 description = "Server providing market statistics on OLAS"
-authors = ["David Minarsch <david.minarsch@googlemail.com>"]
-license = "Apache 2.0"
+authors = [{ name = "David Minarsch", email = "david.minarsch@googlemail.com" }]
+requires-python = ">=3.10,<4"
 readme = "README.md"
+license = "Apache-2.0"
+dependencies = [
+    "Flask>=2.3.2,<3",
+    "flask-caching>=2.0.2,<3",
+    "web3>=6.8.0,<7",
+    # WSGI server invoked by the Dockerfile CMD; production runtime dep,
+    # not a dev tool (was misclassified under Poetry's dev group).
+    "waitress>=3.0.2,<4",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-Flask = "^2.3.2"
-flask-caching = "^2.0.2"
-web3 = "^6.8.0"
+[dependency-groups]
+dev = [
+    "black>=23.10.0,<24",
+    "isort>=5.12.0,<6",
+    "mypy>=1.6.1,<2",
+    "pylint>=3.0.1,<4",
+    "flake8>=6.1.0,<7",
+]
 
-
-[tool.poetry.group.dev.dependencies]
-black = "^23.10.0"
-isort = "^5.12.0"
-mypy = "^1.6.1"
-pylint = "^3.0.1"
-flake8 = "^6.1.0"
-waitress = "^3.0.2"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv]
+package = false

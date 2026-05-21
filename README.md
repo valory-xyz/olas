@@ -4,9 +4,10 @@ Server providing market statistics on OLAS
 
 ## Installation
 
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
+
 ```bash
-poetry install
-poetry shell
+uv sync --frozen
 ```
 
 ## Run server
@@ -18,5 +19,5 @@ export ALCHEMY_API_KEY=YOUR_KEY
 
 Then run the server:
 ```bash
-python server.py
+uv run python server.py
 ```
